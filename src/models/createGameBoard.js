@@ -1,4 +1,4 @@
-import { createShip } from "./createShip"
+import { createShip } from "./createShip.js"
 
 export const createGameBoard = (rows = 10, cols = 10) => {
     let _grid = createGrid(rows, cols)
@@ -6,17 +6,22 @@ export const createGameBoard = (rows = 10, cols = 10) => {
     const _attacks = []
     
     function createAllShips() {
-        return array = [
+        return [
             createShip(5,"carrier"),
             createShip(4, "battleship"),
             createShip(3, "cruiser"),
-            createShip(2, "destroyer"),
+            createShip(3, "submarine"),
+            createShip(2, "destroyer")
         ]
     }
 
     function getShip(name) {
         return _ships.find(element => element.getName() == name)
         
+    }
+
+    function getAllShips() {
+        return _ships
     }
 
     function createGrid(rows, cols) {
@@ -170,12 +175,15 @@ export const createGameBoard = (rows = 10, cols = 10) => {
     }
 
     function strictEqual(array1, array2) {
-        return (array1[0] == array2[0] && array[1] == array[1])
+        return (array1[0] == array2[0] && array1[1] == array2[1])
     }
 
     function getAttacks(coords) {
-        return _attacks.find(move => strictEqual(move.coords,coords))
-                       .outcome
+        const search = _attacks.find(move => strictEqual(move.coords,coords))
+        if (search == undefined) {
+            return undefined
+        } else {return search.outcome}
+
     }
 
     function receiveAttack(coords) {
@@ -195,6 +203,20 @@ export const createGameBoard = (rows = 10, cols = 10) => {
         return _ships.every(element => element.isSunk() == true)
     }
 
+    function randomPlaceAll() {
+
+    }
+
+    
+
+    function tempSetPlace() {
+        placeRight("cruiser",[3,0])
+        placeUp("carrier",[3,2])
+        placeUp("battleship",[5,2])
+        placeUp("submarine",[5,7])
+        placeUp("destroyer", [3,8])
+    }
+
     return {
         getGrid,
         placeRight,
@@ -209,5 +231,7 @@ export const createGameBoard = (rows = 10, cols = 10) => {
         receiveAttack,
         allSunk,
         getShip,
+        tempSetPlace,
+        getAllShips
     }
 }

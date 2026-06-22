@@ -2,10 +2,6 @@ import { create } from "lodash";
 import { createGameBoard } from "../models/createGameBoard.js";
 import { createShip } from "../models/createShip.js"
 
-// describe("test", () => { 
-//     const gameBoard = createGameBoard()
-//     console.log(gameBoard.getGrid())
-// })
 
 describe("getCoords method tests", () => {
     test("return ship from getCoords", () => {
@@ -144,9 +140,30 @@ describe("remove ship method", () => {
     })
 })
 
+describe("getAttacks method", () => {
+    test("getAttack on coords that have not been attacked", () => {
+        const gameboard = createGameBoard()
+        const ship = "cruiser"
+        gameboard.placeRight(ship, [3,3])
+        gameboard.receiveAttack([3,4])
 
+        expect(gameboard.getAttacks([3,3])).toBe(undefined)
+        expect(gameboard.getAttacks([3,4])).toBe("m")
+    })
 
-describe("receive attack method", () => { // need to rework
+    test("getAttack on coords that have not been attacked", () => {
+        const gameboard = createGameBoard()
+        const ship = "cruiser"
+        gameboard.placeRight(ship, [3,3])
+        gameboard.receiveAttack([3,3])
+
+        expect(gameboard.getAttacks([3,3])).toBe("h")
+        expect(gameboard.getAttacks([3,4])).toBe(undefined)
+    })
+
+})
+
+describe("receive attack method", () => { 
     test("receive attack on ship", () => {
         const gameboard = createGameBoard()
         const ship = "cruiser"
@@ -164,7 +181,7 @@ describe("receive attack method", () => { // need to rework
         gameboard.placeRight(ship, [3,3])
         gameboard.receiveAttack([3,4])
 
-        expect(gameboard.getAttacks([3,3])).toBe("m")
+        expect(gameboard.getAttacks([3,4])).toBe("m")
         expect(gameboard.getShip(ship).isSunk()).toBe(false)
     })
 
@@ -234,6 +251,7 @@ describe("allSunk method + private ships list", () => {
         gameboard.getShip("destroyer").addHit(2)
         gameboard.getShip("cruiser").addHit(3)
         gameboard.getShip("battleship").addHit(4)
+        gameboard.getShip("submarine").addHit(3)
 
         expect(gameboard.allSunk()).toBe(true)
         

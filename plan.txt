@@ -1,4 +1,4 @@
 options for gameboard
 - 100 length array
 - object literal of abcdefghij containing array from 0,9
-- 2D array
+- 2D arrayW
