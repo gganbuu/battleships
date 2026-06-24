@@ -33,6 +33,13 @@ export default {
         test: /\.(png|svg|jpg|jpeg|gif)$/i,
         type: "asset/resource",
       },
+       {
+        test: /\.(woff|woff2|eot|ttf|otf)$/i,
+        type: 'asset/resource', // Webpack 5's native asset management
+        generator: {
+          filename: 'fonts/[name][ext]', // Saves bundled fonts into a specific output directory
+        },
+      },
     ],
   },
 };

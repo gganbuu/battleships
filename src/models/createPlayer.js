@@ -8,12 +8,17 @@ export const createPlayer = (name) => {
         return _name
     }
 
+    function setName(newName) {
+        _name = newName
+    }
+
     function getGameBoard() {
         return _gameboard
     }
 
     return {
         getName,
+        setName,
         getGameBoard
     }
 }

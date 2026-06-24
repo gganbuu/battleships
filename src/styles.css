@@ -67,6 +67,10 @@ p, h1, h2, h3, h4, h5, h6 {
   isolation: isolate;
 }
 
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
 /* main */
 .main-container {
     width: 100vw;
@@ -78,9 +82,26 @@ p, h1, h2, h3, h4, h5, h6 {
 }
 
 /* gameboard styling */
-.game-board {
+
+.gameboard-container {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.gameboard-grid {
     display: grid;
     grid-template: repeat(10, 50px) / repeat(10, 50px);
+    gap: 3px;
+}
+
+.game-cell:hover {
+  background-color: grey;
+}
+
+.gameboard-name-container {
+  background-color: #D9D9D9;
+  padding: 5px;
 }
 
 .empty {
@@ -99,3 +120,95 @@ p, h1, h2, h3, h4, h5, h6 {
     background-color: #424242
 }
 
+/* modal */
+.modal {
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 500px; /* Could be more or less, depending on screen size */
+  height: 180px;
+  border-radius: 10px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-title {
+  text-align: center;
+}
+
+.restart-button {
+  background-color: grey;
+  color: white;
+  border-radius: 5px;
+  padding: 5px 10px;  
+}
+
+/* start game */
+.configuration-container {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+}
+
+
+.gameboard-container {
+  width: 500px;
+  height: 500px;
+  background-color: #D9D9D9;
+}
+
+.ships-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  column-gap: 53px;
+  background-color: #D9D9D9;
+  height: 150px;
+  width: 527px;
+}
+
+.draggable {
+  cursor: move;
+}
+
+.draggable.dragging {
+  opacity: 0.01;
+}
+
+#destroyer {
+  width: 103px;
+  height: 50px;
+  z-index: 1;
+}
+
+#cruiser {
+  width: 156px;
+  height: 50px;
+  z-index: 1;
+}
+
+
+
+.hidden {
+  display: none;
+}
+
+.absolute {
+  position: absolute;
+}

@@ -43,7 +43,7 @@ export const createGameBoard = (rows = 10, cols = 10) => {
 
         const shipLength = ship.getLength()
         
-        if (col + shipLength-1 > 9) throw new Error("Out of Bounds Error: Co-ordinate is out of bounds")
+        if (col + shipLength-1 > 9) throw new Error(`Out of Bounds Error: Co-ordinate is out of bounds`)
         
         for (let i = col; i < col+shipLength; i++) {
             if (!checkCoords([i,row])) { 
@@ -136,8 +136,13 @@ export const createGameBoard = (rows = 10, cols = 10) => {
         _grid[row][col] = value
     }
 
+    //checkrotate method
+    function checkRotate(ship, direction) {
+        
+    }
 
-    //where method --> takes name of ship
+
+    //where method --> takes name of ship and returns all positions where ship object matching the name is reference
     function where(name) {
         const ship = getShip(name)
         if (ship == undefined) throw new Error("Name Error: Ship with name provided does NOT exist")
@@ -232,6 +237,7 @@ export const createGameBoard = (rows = 10, cols = 10) => {
         allSunk,
         getShip,
         tempSetPlace,
-        getAllShips
+        getAllShips,
+        checkRotate,
     }
 }

@@ -1,20 +1,27 @@
-export const createGameBoardComponent = () => {
-    const gameBoardComponent = document.createElement("div")
-    gameBoardComponent.classList.add("game-board")
-    createGameCells(gameBoardComponent)
-    return gameBoardComponent
+import { createCells } from "./createCells.js"
+
+export const createGameBoardComponent = (name) => {
+    const container = document.createElement("div")
+    container.classList.add("gameboard-container")
+
+    const nameContainer = createNameContainer(name)
+    container.appendChild(nameContainer)
+
+    const grid = document.createElement("div")
+    grid.classList.add("gameboard-grid")
+    createCells(grid)
+
+    container.appendChild(grid)
+    return container
 }
 
-const createGameCells = (gameboard) => {
-    for (let i = 9; i >= 0; i--) {
-        for (let j = 0; j <= 9; j++) {
-            const gameCell = document.createElement('div')
-            gameCell.classList.add("game-cell")
-            gameCell.classList.add("empty")
-            gameCell.dataset.row = i
-            gameCell.dataset.col = j
-            gameboard.appendChild(gameCell)
-        }
-    }
+const createNameContainer = (name) => {
+    const nameContainer = document.createElement("div")
+    nameContainer.classList.add("gameboard-name-container")
+    
+    const title = document.createElement("h2")
+    title.textContent = `${name}'s fleet`
+    nameContainer.appendChild(title)
+    return nameContainer
 }
 
