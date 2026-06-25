@@ -91,7 +91,12 @@ export const createGameBoard = (rows = 10, cols = 10) => {
     function checkCoords(coords) {
         const [col, row] = [coords[0], coords[1]]
 
-        if (_grid[row][col] == null ) return false
+        if (row < 0 ||
+            row > 9 ||
+            col < 0 ||
+            col > 9) return true
+
+        if (_grid[row][col] === null) return false
         
         return true
     }
@@ -107,9 +112,25 @@ export const createGameBoard = (rows = 10, cols = 10) => {
     }
 
     //checkrotate method
-    function checkRotate(ship, direction) {
-        
+    function checkRotate(name, orientation) {
+        const ship = getShip(name)
+        const length = ship.getLength()
+        const coords = ship.getAnchor()
+        const [col, row] = [coords[0],coords[1]] 
+
+        if (orientation == "v") {
+            for (let i = row-1; i > row-length-1; i--) {
+                if (checkCoords([col,i])) return false 
+            }
+        } else {
+            for (let j = col+1; j < col+length-1; j++) {
+                if (checkCoords([j,row])) return false
+            }
+        }
+        return true
     }
+
+
 
 
     //where method --> takes name of ship and returns all positions where ship object matching the name is reference

@@ -219,39 +219,39 @@ describe("allSunk method + private ships list", () => {
 
 })
 
-describe.skip("checkRotate method", () => {
+describe("checkRotate method", () => {
     test("check move down, legal", () => {
         const board = createGameBoard()
         board.placeRight("cruiser", [3,3])
-        expect(board.checkRotate("cruiser","down")).toBe(true)
+        expect(board.checkRotate("cruiser","v")).toBe(true)
     })
     test("check move down, illegal - out of bounds", () => {
         const board = createGameBoard()
         board.placeRight("cruiser", [3,0])
-        expect(board.checkRotate("cruiser","down")).toBe(false)
+        expect(board.checkRotate("cruiser","v")).toBe(false)
     })
     test("check move down, illegal - collision", () => {
         const board = createGameBoard()
         board.placeRight("cruiser", [3,3])
         board.placeRight("destroyer", [3,2])
-        expect(board.checkRotate("cruiser","down")).toBe(false)
+        expect(board.checkRotate("cruiser","v")).toBe(false)
     })
 
     test("check move right, legal", () => {
         const board = createGameBoard()
         board.placeDown("cruiser", [3,3])
-        expect(board.checkRotate("cruiser","right")).toBe(true)
+        expect(board.checkRotate("cruiser","h")).toBe(true)
     })
     test("check move right, illegal - out of bounds", () => {
         const board = createGameBoard()
         board.placeDown("cruiser", [9,3])
-        expect(board.checkRotate("cruiser","right")).toBe(false)
+        expect(board.checkRotate("cruiser","h")).toBe(false)
     })
     test("check move right, illegal - collision", () => {
         const board = createGameBoard()
         board.placeDown("cruiser", [3,3])
         board.placeDown("destroyer", [4,3])
-        expect(board.checkRotate("cruiser", "right")).toBe(false)
+        expect(board.checkRotate("cruiser", "h")).toBe(false)
     })
 })
 
