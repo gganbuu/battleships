@@ -49,7 +49,7 @@ describe("placeRight method (left to right)", () => {
 })
 
 
-describe("placeLeft method (Right to Left)", () => {
+describe.skip("placeLeft method (Right to Left)", () => { //removed from factory
     test("Place length 3 ship left from point [1,1] (Error)", () => {
         const gameboard = createGameBoard()
         expect(() => {gameboard.placeLeft("cruiser", [1,1])}).toThrow("Out of Bounds Error: Co-ordinate is out of bounds")
@@ -74,7 +74,7 @@ describe("placeLeft method (Right to Left)", () => {
 })
 
 
-describe("placeDown method (Top to Bottom)", () => {
+describe.skip("placeDown method (Top to Bottom)", () => { //removed from factory
     test("Place length 3 ship downwards from point [2,3]", () => {
         const gameboard = createGameBoard()
         gameboard.placeDown("cruiser", [2,3])

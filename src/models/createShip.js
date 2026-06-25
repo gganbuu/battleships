@@ -3,15 +3,19 @@ export const createShip = (length, name = "ship") => {
     let _length = length
     let _hit = 0
     let _sunk = false
-    
-    // length methods
-    function getLength() {
-        return _length
-    }
 
+    let _anchorCoord = null;
+    let _orientation = null; 
+    
+    
     // name methods
     function getName() {
         return _name
+    }
+
+    // length methods
+    function getLength() {
+        return _length
     }
 
     // sunk methods
@@ -31,7 +35,25 @@ export const createShip = (length, name = "ship") => {
     function addHit(number) {
         _hit += number ?? 1
         if (_hit == _length) setSunk()
+    }
 
+    // anchor methods
+    function getAnchor() {
+        return _anchorCoord 
+    }
+
+    function setAnchor(newAnchorCoord) {
+        _anchorCoord = newAnchorCoord
+    }
+
+
+    // orientation methods
+    function getOrientation() {
+        return _orientation
+    }
+
+    function setOrientation(newOrientation) {
+        _orientation = newOrientation
     }
 
     return {
@@ -39,6 +61,10 @@ export const createShip = (length, name = "ship") => {
         getName,
         isSunk,
         getHit,
-        addHit
+        addHit,
+        getAnchor,
+        setAnchor,
+        getOrientation,
+        setOrientation
     }
 }
