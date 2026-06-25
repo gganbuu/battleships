@@ -43,16 +43,22 @@ export const createGameBoard = (rows = 10, cols = 10) => {
 
         const shipLength = ship.getLength()
         
-        if (col + shipLength-1 > 9) throw new Error(`Out of Bounds Error: Co-ordinate is out of bounds`)
+        if (col + shipLength-1 > 9) throw new Error(`Out of Bounds Error: Ship is out of bounds`)
         
+        // check if space is occupied
         for (let i = col; i < col+shipLength; i++) {
-            if (!checkCoords([i,row])) { 
-                _grid[row][i] = ship
-            } else {
-                throw new Error("Occupied Error: the ship cannot be placed, as that square is already occupied")
-
+            if (checkCoords([i,row])) { 
+               throw new Error("Occupied Error: the ship cannot be placed, as that square is already occupied")
             }
         }
+
+        for (let j = col; j < col+shipLength; j++) {
+            _grid[row][j] = ship
+        }
+
+        ship.setAnchor([col,row])
+        ship.setOrientation("h")
+
     }
 
     function placeDown(name, coords) {
@@ -63,16 +69,21 @@ export const createGameBoard = (rows = 10, cols = 10) => {
 
         const shipLength = ship.getLength()
         
-        if (row - shipLength < 0) throw new Error("Out of Bounds Error: Co-ordinate is out of bounds")
+        if (row - shipLength < 0) throw new Error("Out of Bounds Error: Ship is out of bounds")
         
+        // check if space is occupied
         for (let i = row; i > row-shipLength; i--) {
-            if (!checkCoords([col,i])) { 
-                _grid[i][col] = ship
-            } else {
+            if (checkCoords([col,i])) { 
                 throw new Error("Occupied Error: the ship cannot be placed, as that square is already occupied")
-
-            }
+            } 
         }
+
+        for (let j = row; j > row-shipLength; j--) {
+            _grid[j][col] = ship
+        }
+
+        ship.setAnchor([col,row])
+        ship.setOrientation("v")
     }
 
 

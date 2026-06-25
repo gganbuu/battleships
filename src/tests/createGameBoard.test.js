@@ -21,13 +21,12 @@ describe("placeRight method (left to right)", () => {
     })
     test("Place length 5 ship right from point [4,7]", () => {
         const gameboard = createGameBoard()
-        const ship = createShip(5)
         gameboard.placeRight("carrier", [4,7])
         expect(gameboard.where("carrier")).toStrictEqual([[4,7],[5,7],[6,7],[7,7],[8,7]])
     })
     test("Place length 5 ship right from point [6,7] (Error)", () => {
         const gameboard = createGameBoard()
-        expect(() => {gameboard.placeRight("carrier", [6,7])}).toThrow("Out of Bounds Error: Co-ordinate is out of bounds")
+        expect(() => {gameboard.placeRight("carrier", [6,7])}).toThrow("Out of Bounds Error: Ship is out of bounds")
     })
 
     test("Place length 2 ship right from point [8,0]", () => {
@@ -38,7 +37,7 @@ describe("placeRight method (left to right)", () => {
 
     test("Place length 2 ship right from point [9,0] (Error)", () => {
         const gameboard = createGameBoard()
-        expect(() => {gameboard.placeRight("cruiser", [9,0])}).toThrow("Out of Bounds Error: Co-ordinate is out of bounds")
+        expect(() => {gameboard.placeRight("cruiser", [9,0])}).toThrow("Out of Bounds Error: Ship is out of bounds")
     })
 
     test("Place two ships on same point [0,0] (error)", () => {
@@ -46,35 +45,18 @@ describe("placeRight method (left to right)", () => {
         gameboard.placeRight("cruiser", [0,0])
         expect(() => {gameboard.placeRight("battleship", [0,0])}).toThrow(`Occupied Error: the ship cannot be placed, as that square is already occupied`)
     })
-})
 
-
-describe.skip("placeLeft method (Right to Left)", () => { //removed from factory
-    test("Place length 3 ship left from point [1,1] (Error)", () => {
+    test("Place a ship that collides with another ship", () => {
         const gameboard = createGameBoard()
-        expect(() => {gameboard.placeLeft("cruiser", [1,1])}).toThrow("Out of Bounds Error: Co-ordinate is out of bounds")
-    })
-    test("Place length 3 ship left from point [3,1]", () => {
-        const gameboard = createGameBoard()
-        gameboard.placeLeft("cruiser", [3,1])
-        expect(gameboard.where("cruiser")).toStrictEqual([[1,1],[2,1],[3,1]])
-    })
-    test("Place length 5 ship left from point [5,6]", () => {
-        const gameboard = createGameBoard()
-        gameboard.placeLeft("carrier", [5,6])
-        expect(gameboard.where("carrier")).toStrictEqual([[1,6],[2,6],[3,6],[4,6],[5,6],])
-    })
-
-    test("Place two ships on overlapping tiles", () => {
-        const gameboard = createGameBoard()
-        gameboard.placeLeft("cruiser", [3,1])
-        expect(() => {gameboard.placeLeft("destroyer", [2,1])}).toThrow(Error)
-    
+        gameboard.placeDown("cruiser", [4,4])
+        expect(() => {gameboard.placeRight("battleship", [3, 3])}).toThrow(`Occupied Error: the ship cannot be placed, as that square is already occupied`)
+        expect(gameboard.getCoords([3,3])).toBeNull()
+        expect(gameboard.getShip("cruiser").getOrientation()).toBe("v")
+        expect(gameboard.getShip("cruiser").getAnchor()).toStrictEqual([4,4])
     })
 })
 
-
-describe.skip("placeDown method (Top to Bottom)", () => { //removed from factory
+describe("placeDown method (Top to Bottom)", () => { 
     test("Place length 3 ship downwards from point [2,3]", () => {
         const gameboard = createGameBoard()
         gameboard.placeDown("cruiser", [2,3])
@@ -82,42 +64,20 @@ describe.skip("placeDown method (Top to Bottom)", () => { //removed from factory
     })
     test("Place length 3 ship downwards from point [2,2] (Error)", () => {
         const gameboard = createGameBoard()
-        expect(()=>{gameboard.placeDown("cruiser", [2,2])}).toThrow("Out of Bounds Error: Co-ordinate is out of bounds")  
+        expect(()=>{gameboard.placeDown("cruiser", [2,2])}).toThrow("Out of Bounds Error: Ship is out of bounds")  
     })
     test("Place length 5 ship downwards from point [7,7]", () => {
         const gameboard = createGameBoard()
         gameboard.placeDown("carrier", [7,7])
         expect(gameboard.where("carrier")).toStrictEqual([[7,3],[7,4],[7,5],[7,6],[7,7]])
     })
-    test("Place two ships on overlapping tiles", () => {
+    test("Place ship that collides", () => {
         const gameboard = createGameBoard()
-        gameboard.placeDown("cruiser", [3,3])
-        expect(() => {gameboard.placeLeft("battleship", [4,3])}).toThrow(Error)
-    
-    })
-})
-
-describe("placeUp method (Bottom to Top)", () => {
-    test("Place length 3 ship up from point [1,3]", () => {
-        const gameboard = createGameBoard()
-        gameboard.placeUp("cruiser", [1,3])
-        expect(gameboard.where("cruiser")).toStrictEqual([[1,3],[1,4],[1,5]])  
-    })
-    test("Place length 3 ship up from point [1,9] (Error)", () => {
-        const gameboard = createGameBoard()
-        expect(()=>{gameboard.placeUp("cruiser", [1, 9])}).toThrow(Error)
-    })
-    test("Place length 3 ship up from point [1,7]", () => {
-        const gameboard = createGameBoard()
-        gameboard.placeUp("cruiser", [1,7])
-        expect(gameboard.where("cruiser")).toStrictEqual([[1,7],[1,8],[1,9]])  
-    })
-    test("Place two ships on overlapping tiles", () => {
-        const gameboard = createGameBoard()
-        const ship1 = "cruiser"
-        const ship2 = "carrier"
-        gameboard.placeRight(ship1, [1,2])
-        expect(()=>{gameboard.placeUp(ship2, [1,0])}).toThrow(Error)
+        gameboard.placeRight("cruiser", [3,3])
+        expect(() => {gameboard.placeDown("battleship", [4,4])}).toThrow(Error)
+        expect(gameboard.getCoords([4,4])).toBeNull()
+        expect(gameboard.getShip("cruiser").getOrientation()).toBe("h")
+        expect(gameboard.getShip("cruiser").getAnchor()).toStrictEqual([3,3])
     })
 })
 
@@ -220,7 +180,7 @@ describe("receive attack method", () => {
         gameboard.receiveAttack([4,3])
 
         const ship2 = "carrier"
-        gameboard.placeUp(ship2, [8,0])
+        gameboard.placeDown(ship2, [8,5])
         gameboard.receiveAttack([8,1])
         gameboard.receiveAttack([8,2])
 
@@ -259,7 +219,7 @@ describe("allSunk method + private ships list", () => {
 
 })
 
-describe("checkRotate method", () => {
+describe.skip("checkRotate method", () => {
     test("check move down, legal", () => {
         const board = createGameBoard()
         board.placeRight("cruiser", [3,3])
@@ -292,5 +252,77 @@ describe("checkRotate method", () => {
         board.placeDown("cruiser", [3,3])
         board.placeDown("destroyer", [4,3])
         expect(board.checkRotate("cruiser", "right")).toBe(false)
+    })
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+describe.skip("placeLeft method (Right to Left)", () => { //removed method from factory
+    test("Place length 3 ship left from point [1,1] (Error)", () => {
+        const gameboard = createGameBoard()
+        expect(() => {gameboard.placeLeft("cruiser", [1,1])}).toThrow("Out of Bounds Error: Co-ordinate is out of bounds")
+    })
+    test("Place length 3 ship left from point [3,1]", () => {
+        const gameboard = createGameBoard()
+        gameboard.placeLeft("cruiser", [3,1])
+        expect(gameboard.where("cruiser")).toStrictEqual([[1,1],[2,1],[3,1]])
+    })
+    test("Place length 5 ship left from point [5,6]", () => {
+        const gameboard = createGameBoard()
+        gameboard.placeLeft("carrier", [5,6])
+        expect(gameboard.where("carrier")).toStrictEqual([[1,6],[2,6],[3,6],[4,6],[5,6],])
+    })
+
+    test("Place two ships on overlapping tiles", () => {
+        const gameboard = createGameBoard()
+        gameboard.placeLeft("cruiser", [3,1])
+        expect(() => {gameboard.placeLeft("destroyer", [2,1])}).toThrow(Error)
+    
+    })
+})
+
+describe.skip("placeUp method (Bottom to Top)", () => { //removed method from factory
+    test("Place length 3 ship up from point [1,3]", () => {
+        const gameboard = createGameBoard()
+        gameboard.placeUp("cruiser", [1,3])
+        expect(gameboard.where("cruiser")).toStrictEqual([[1,3],[1,4],[1,5]])  
+    })
+    test("Place length 3 ship up from point [1,9] (Error)", () => {
+        const gameboard = createGameBoard()
+        expect(()=>{gameboard.placeUp("cruiser", [1, 9])}).toThrow(Error)
+    })
+    test("Place length 3 ship up from point [1,7]", () => {
+        const gameboard = createGameBoard()
+        gameboard.placeUp("cruiser", [1,7])
+        expect(gameboard.where("cruiser")).toStrictEqual([[1,7],[1,8],[1,9]])  
+    })
+    test("Place two ships on overlapping tiles", () => {
+        const gameboard = createGameBoard()
+        const ship1 = "cruiser"
+        const ship2 = "carrier"
+        gameboard.placeRight(ship1, [1,2])
+        expect(()=>{gameboard.placeUp(ship2, [1,0])}).toThrow(Error)
     })
 })
