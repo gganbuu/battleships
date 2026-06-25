@@ -255,6 +255,57 @@ describe("checkRotate method", () => {
     })
 })
 
+describe("rotate method", () => {
+    test("rotate horizontal cruiser to vertical", () => {
+        const gameboard = createGameBoard()
+        gameboard.placeRight("cruiser", [3,3])
+        gameboard.rotate("cruiser")
+        console.log(gameboard.where("cruiser"))
+        expect(gameboard.getShip("cruiser").getAnchor()).toStrictEqual([3,3])
+        expect(gameboard.where("cruiser")).toStrictEqual([[3,1],[3,2],[3,3]])
+        expect(gameboard.getShip("cruiser").getOrientation()).toBe("v")
+    })
+    test.skip("rotate vertical cruiser to horizontal", () => {
+        const gameboard = createGameBoard()
+        gameboard.placeDown("cruiser", [3,3])
+        gameboard.rotate("cruiser")
+        expect(gameboard.getShip("cruiser").getAnchor()).toStrictEqual([3,3])
+        expect(gameboard.where("cruiser")).toStrictEqual([[3,3],[4,3],[5,3]])
+        expect(gameboard.getShip("cruiser").getOrientation()).toBe("h")
+        expect(gameboard.getShip("cruiser").getOrientation()).toBe("v")
+    })
+    test.skip("rotate vertical cruiser to horizontal, bounds error", () => {
+        const gameboard = createGameBoard()
+        gameboard.placeDown("cruiser", [9,3])
+        expect(() => {gameboard.rotate("cruiser")}).toBe(Error)
+        expect(gameboard.getShip("cruiser").getOrientation()).toBe("v")
+    })
+
+    test.skip("rotate horizontal cruiser to vertical, bounds error", () => {
+        const gameboard = createGameBoard()
+        gameboard.placeRight("cruiser", [3,0])
+        expect(() => {gameboard.rotate("cruiser")}).toBe(Error)
+        expect(gameboard.getShip("cruiser").getOrientation()).toBe("h")
+    })
+
+    test.skip("rotate vertical cruiser to horizontal, collision error", () => {
+        const gameboard = createGameBoard()
+        gameboard.placeDown("cruiser", [3,3])
+        gameboard.placeRight("destroyer", [2,2])
+        expect(() => {gameboard.rotate("cruiser")}).toBe(Error)
+        expect(gameboard.getShip("cruiser").getOrientation()).toBe("v")
+    })
+
+    test.skip("rotate horizontal cruiser to vertical, collision error", () => {
+        const gameboard = createGameBoard()
+        gameboard.placeRight("cruiser", [3,3])
+        gameboard.placeDown("destroyer", [4,4])
+        expect(() => {gameboard.rotate("cruiser")}).toBe(Error)
+        expect(gameboard.getShip("cruiser").getOrientation()).toBe("h")
+    })
+    
+})
+
 
 
 

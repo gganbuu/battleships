@@ -130,7 +130,20 @@ export const createGameBoard = (rows = 10, cols = 10) => {
         return true
     }
 
+    //rotate method
+    function rotate(name) {
+        const ship = getShip(name)
+        const coords = ship.getAnchor()
+        let orientation
+        ship.getOrientation() == "v" ? orientation = "h": orientation = "v"; 
 
+        if (checkRotate(name, orientation)) {
+            remove(name)
+            if (orientation == "v") {
+                placeDown(name, coords)
+            } else { placeRight(name, coords)}
+        }
+    }
 
 
     //where method --> takes name of ship and returns all positions where ship object matching the name is reference
@@ -155,6 +168,9 @@ export const createGameBoard = (rows = 10, cols = 10) => {
     function remove(name) {
         const ship = getShip(name)
         if (ship == undefined) throw new Error("Name Error: Ship with name provided does NOT exist")
+        
+        ship.setAnchor(null)
+        ship.setOrientation(null)
 
         _grid.forEach((row, rIndex) => {
             row.forEach((col, cIndex) => {
@@ -230,6 +246,7 @@ export const createGameBoard = (rows = 10, cols = 10) => {
         tempSetPlace,
         getAllShips,
         checkRotate,
+        rotate,
     }
 }
 
