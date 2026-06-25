@@ -6,6 +6,7 @@ export const createCells = (gameboard) => {
             gameCell.classList.add("empty")
             gameCell.dataset.row = i
             gameCell.dataset.col = j
+            gameCell.dataset.contains = "null"
             gameboard.appendChild(gameCell)
         }
     }

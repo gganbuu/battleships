@@ -43,7 +43,6 @@ export const createStartScreen = () => {
             draggable.classList.add('dragging')
             dragged = e.target
         })
-
         draggable.addEventListener('dragend', () => { //styling
             draggable.classList.remove('dragging')
         })
@@ -54,22 +53,11 @@ export const createStartScreen = () => {
             let orientation = e.target.dataset.orientation
 
             if (target.parentNode.classList.includes("game-cell")) { //only allow rotation within the gameboard
-                
+                //check rotation legal
+                let length = player.getGameBoard().getShip(target.id).getLength()
 
-                
-
-                //plan 
-                // check if the rotation is legal, if not break
-                //      if  
-                // remove target's position from gameboard ---- player.getGameBoard().remove(target.id) // remove targets position
-                // if dragged.orientation is horizontal
-                //      do placedown
-                //  else, place right
             
-            
-            
-            
-            
+                orientation == "horizontal" ? orientation = "vertical": orientation = "horizontal";
             }   
         })
 
@@ -78,15 +66,10 @@ export const createStartScreen = () => {
     //dropzone event listeners
     const dropzones = gameBoardContainer.querySelectorAll(".game-cell")
     dropzones.forEach(dropzone => {
-        dropzone.addEventListener('dragover', (e) => {
+        dropzone.addEventListener('dragover', (e) => { //remove default drag over behaviour
             e.preventDefault()
-            let target = e.target
-            let col = target.dataset.col 
-            let row = target.dataset.row
-
-            // console.log(`[${col},${row}]`)
         })
-
+        
         dropzone.addEventListener('drop', (e) => {
             e.preventDefault()
             let target = e.target
@@ -94,20 +77,25 @@ export const createStartScreen = () => {
             let row = Number(target.dataset.row)
             let className = target.className
 
-            if (className.includes("game-cell")) { // check if ship is being dragged into gamecell div
-                try {
-                    player.getGameBoard().remove(dragged.id)// remove ship if position already exists
+            if (className.includes("game-cell")) { 
+                dragged.dataset.col = col
+                dragged.dataset.row = row
+                let orientation = dragged.dataset.orientation
+                let length = player.getGameBoard().getShip(dragged.id).getLength()
 
-                    player.getGameBoard().placeRight(dragged.id, [col,row]) // place ship in new position 
-                    dragged.parentNode.removeChild(dragged)
-                    target.appendChild(dragged)
-                    dragged.classList.add("absolute")
-                    
-                    //debugging functions
-                    checkDestroyer()
-                    checkCruiser()
+                if (orientation == "horizontal") {
+                    for (let i = col; i < col + length; i++) {
+                        let div = gameBoardContainer.querySelector(`[data-col='${i}'][data-row='${row}']`)
+                        div.classList.remove("empty")
+                        div.classList.add("ship")
+                        div.dataset.contains = dragged.id
+                    }
                 }
-                catch (error) { console.error("Error: " + error.message)}  
+
+                dragged.parentNode.removeChild(dragged)
+                target.appendChild(dragged)
+                dragged.classList.add("absolute")
+            
             } 
         })
     })
@@ -118,30 +106,50 @@ export const createStartScreen = () => {
 
     shipsContainer.addEventListener("drop", (e) => {
         e.preventDefault()
+        // get target
         let target = e.target
         let className = target.className 
+
+        // get dragged data
+        let orientation = dragged.dataset.orientation
+        let col = Number(dragged.dataset.col)
+        let row = Number(dragged.dataset.row)
+        let length = player.getGameBoard().getShip(dragged.id).getLength()
+
+
         if (className.includes("ships-container")) {
-            player.getGameBoard().remove(dragged.id)
+            if (orientation == 'horizontal') {
+                for (let i = col; i < col + length; i++) {
+                    let div = gameBoardContainer.querySelector(`[data-col='${i}'][data-row='${row}']`)
+                    div.classList.remove("ship")
+                    div.classList.add("empty")
+                    div.dataset.contains = "null"
+                }
+            }
+
+            dragged.dataset.col = null
+            dragged.dataset.row = null
+
+            
             dragged.parentNode.removeChild(dragged)
             target.appendChild(dragged)
             dragged.classList.remove("absolute")
 
-            checkDestroyer()
-            checkCruiser()
         }
     })
-
-
-    // debugging functions
-
-    const checkDestroyer = () => {
-        console.log("destroyer = " + player.getGameBoard().where("destroyer"))
-    }
-
-    const checkCruiser = () => {
-        console.log("cruiser = " + player.getGameBoard().where("cruiser"))
-    }
 }   
+
+
+//handleDropInGameCell
+
+// debugging functions
+const checkDestroyer = (player) => {
+    console.log("destroyer = " + player.getGameBoard().where("destroyer"))
+}
+
+const checkCruiser = (playerr) => {
+    console.log("cruiser = " + player.getGameBoard().where("cruiser"))
+}
 
 
 

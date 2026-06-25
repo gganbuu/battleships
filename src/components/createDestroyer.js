@@ -4,5 +4,7 @@ export const createDestroyer = () => {
     destroyer.id = "destroyer"
     destroyer.dataset.orientation = "horizontal"
     destroyer.draggable = "true"
+    destroyer.dataset.col = "null"
+    destroyer.dataset.row = "null"
     return destroyer 
 }

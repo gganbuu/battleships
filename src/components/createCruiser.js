@@ -4,5 +4,7 @@ export const createCruiser = () => {
     cruiser.id = "cruiser"
     cruiser.dataset.orientation = "horizontal"
     cruiser.draggable = "true"
+    cruiser.dataset.col = "null"
+    cruiser.dataset.row = "null"
     return cruiser 
 }
