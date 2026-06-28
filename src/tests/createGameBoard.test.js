@@ -54,6 +54,15 @@ describe("placeRight method (left to right)", () => {
         expect(gameboard.getShip("cruiser").getOrientation()).toBe("v")
         expect(gameboard.getShip("cruiser").getAnchor()).toStrictEqual([4,4])
     })
+
+    test("Place a ship that collides with another ship", () => {
+        const gameboard = createGameBoard()
+        gameboard.placeDown("cruiser", [4,4])
+        expect(() => {gameboard.placeRight("battleship", [3, 2])}).toThrow(`Occupied Error: the ship cannot be placed, as that square is already occupied`)
+        expect(gameboard.getCoords([3,2])).toBeNull()
+        expect(gameboard.getShip("cruiser").getOrientation()).toBe("v")
+        expect(gameboard.getShip("cruiser").getAnchor()).toStrictEqual([4,4])
+    })
 })
 
 describe("placeDown method (Top to Bottom)", () => { 
@@ -62,10 +71,10 @@ describe("placeDown method (Top to Bottom)", () => {
         gameboard.placeDown("cruiser", [2,3])
         expect(gameboard.where("cruiser")).toStrictEqual([[2,1],[2,2],[2,3]])
     })
-    test("Place length 3 ship downwards from point [2,2] (Error)", () => {
+    test("Place length 3 ship downwards from point [2,1] (Error)", () => {
         const gameboard = createGameBoard()
-        expect(()=>{gameboard.placeDown("cruiser", [2,2])}).toThrow("Out of Bounds Error: Ship is out of bounds")  
-    })
+        expect(()=>{gameboard.placeDown("cruiser", [2,1])}).toThrow("Out of Bounds Error: Ship is out of bounds")  
+    })  
     test("Place length 5 ship downwards from point [7,7]", () => {
         const gameboard = createGameBoard()
         gameboard.placeDown("carrier", [7,7])
@@ -78,6 +87,12 @@ describe("placeDown method (Top to Bottom)", () => {
         expect(gameboard.getCoords([4,4])).toBeNull()
         expect(gameboard.getShip("cruiser").getOrientation()).toBe("h")
         expect(gameboard.getShip("cruiser").getAnchor()).toStrictEqual([3,3])
+    })
+
+    test("Place carrier at [4,4]", () => {
+        const gameboard = createGameBoard()
+        gameboard.placeDown("carrier", [4,4])
+        expect(gameboard.where("carrier")).toStrictEqual([[4,0],[4,1],[4,2],[4,3],[4,4]])
     })
 })
 
@@ -253,6 +268,18 @@ describe("checkRotate method", () => {
         board.placeDown("destroyer", [4,3])
         expect(board.checkRotate("cruiser", "h")).toBe(false)
     })
+
+    test("rotate horizontal cruiser to vertical", () => {
+        const gameboard = createGameBoard()
+        gameboard.placeRight("cruiser", [0,2])
+        expect(gameboard.checkRotate("cruiser", "v")).toBe(true)
+    })
+
+    test("rotate vertical cruiser to horizontal", () => {
+        const gameboard = createGameBoard()
+        gameboard.placeDown("cruiser", [7,2])
+        expect(gameboard.checkRotate("cruiser", "h")).toBe(true)
+    })
 })
 
 describe("rotate method", () => {
@@ -260,48 +287,57 @@ describe("rotate method", () => {
         const gameboard = createGameBoard()
         gameboard.placeRight("cruiser", [3,3])
         gameboard.rotate("cruiser")
-        console.log(gameboard.where("cruiser"))
         expect(gameboard.getShip("cruiser").getAnchor()).toStrictEqual([3,3])
         expect(gameboard.where("cruiser")).toStrictEqual([[3,1],[3,2],[3,3]])
         expect(gameboard.getShip("cruiser").getOrientation()).toBe("v")
     })
-    test.skip("rotate vertical cruiser to horizontal", () => {
+    test("rotate vertical cruiser to horizontal", () => {
         const gameboard = createGameBoard()
         gameboard.placeDown("cruiser", [3,3])
         gameboard.rotate("cruiser")
         expect(gameboard.getShip("cruiser").getAnchor()).toStrictEqual([3,3])
         expect(gameboard.where("cruiser")).toStrictEqual([[3,3],[4,3],[5,3]])
         expect(gameboard.getShip("cruiser").getOrientation()).toBe("h")
-        expect(gameboard.getShip("cruiser").getOrientation()).toBe("v")
     })
-    test.skip("rotate vertical cruiser to horizontal, bounds error", () => {
+    test("rotate vertical cruiser to horizontal, bounds error", () => {
         const gameboard = createGameBoard()
         gameboard.placeDown("cruiser", [9,3])
-        expect(() => {gameboard.rotate("cruiser")}).toBe(Error)
+        expect(() => {gameboard.rotate("cruiser")}).toThrow(Error)
         expect(gameboard.getShip("cruiser").getOrientation()).toBe("v")
     })
 
-    test.skip("rotate horizontal cruiser to vertical, bounds error", () => {
+    test("rotate horizontal cruiser to vertical, bounds error", () => {
         const gameboard = createGameBoard()
         gameboard.placeRight("cruiser", [3,0])
-        expect(() => {gameboard.rotate("cruiser")}).toBe(Error)
+        expect(() => {gameboard.rotate("cruiser")}).toThrow(Error)
         expect(gameboard.getShip("cruiser").getOrientation()).toBe("h")
     })
 
-    test.skip("rotate vertical cruiser to horizontal, collision error", () => {
+    test("rotate vertical cruiser to horizontal, collision error", () => {
         const gameboard = createGameBoard()
         gameboard.placeDown("cruiser", [3,3])
-        gameboard.placeRight("destroyer", [2,2])
-        expect(() => {gameboard.rotate("cruiser")}).toBe(Error)
-        expect(gameboard.getShip("cruiser").getOrientation()).toBe("v")
+        gameboard.placeDown("destroyer", [2,2])
+        expect(() => {gameboard.rotate("destroyer")}).toThrow(Error)
+        expect(gameboard.getShip("destroyer").getOrientation()).toBe("v")
+        expect(gameboard.where("destroyer")).toStrictEqual([[2,1],[2,2]])
     })
 
-    test.skip("rotate horizontal cruiser to vertical, collision error", () => {
+    test("rotate horizontal cruiser to vertical, collision error", () => {
         const gameboard = createGameBoard()
-        gameboard.placeRight("cruiser", [3,3])
-        gameboard.placeDown("destroyer", [4,4])
-        expect(() => {gameboard.rotate("cruiser")}).toBe(Error)
+        gameboard.placeRight("cruiser", [4,4])
+        gameboard.placeRight("destroyer", [3,3])
+        expect(() => {gameboard.rotate("cruiser")}).toThrow(Error)
         expect(gameboard.getShip("cruiser").getOrientation()).toBe("h")
+        expect(gameboard.where("cruiser")).toStrictEqual([[4,4],[5,4],[6,4]])
+    })
+
+    test("rotate horizonntal carrier to vertical, collision error", () => {
+        const gameboard = createGameBoard()
+        gameboard.placeDown("carrier", [4,4])
+        gameboard.placeDown("destroyer", [8,4])
+        expect(() => {gameboard.rotate("carrier")}).toThrow(Error)
+        expect(gameboard.getShip("carrier").getOrientation()).toBe("v")
+        expect(gameboard.where("carrier")).toStrictEqual([[4,0],[4,1],[4,2],[4,3],[4,4]])
     })
     
 })

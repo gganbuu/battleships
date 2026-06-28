@@ -39,6 +39,7 @@ export const createGameBoard = (rows = 10, cols = 10) => {
         const ship = getShip(name)
         if (ship == undefined) throw new Error("Name Error: Ship with name provided does NOT exist")
         
+        
         const [col, row] = [coords[0], coords[1]]
 
         const shipLength = ship.getLength()
@@ -52,6 +53,9 @@ export const createGameBoard = (rows = 10, cols = 10) => {
             }
         }
 
+        // condition if ship element already exists in the grid
+        if (ship.getAnchor != null) (remove(name))
+
         for (let j = col; j < col+shipLength; j++) {
             _grid[row][j] = ship
         }
@@ -64,12 +68,13 @@ export const createGameBoard = (rows = 10, cols = 10) => {
     function placeDown(name, coords) {
         const ship = getShip(name)
         if (ship == undefined) throw new Error("Name Error: Ship with name provided does NOT exist")
+        
 
         const [col, row] = [coords[0], coords[1]]
 
         const shipLength = ship.getLength()
         
-        if (row - shipLength < 0) throw new Error("Out of Bounds Error: Ship is out of bounds")
+        if (row - (shipLength-1) < 0) throw new Error("Out of Bounds Error: Ship is out of bounds")
         
         // check if space is occupied
         for (let i = row; i > row-shipLength; i--) {
@@ -77,6 +82,8 @@ export const createGameBoard = (rows = 10, cols = 10) => {
                 throw new Error("Occupied Error: the ship cannot be placed, as that square is already occupied")
             } 
         }
+
+        if (ship.getAnchor != null) (remove(name))
 
         for (let j = row; j > row-shipLength; j--) {
             _grid[j][col] = ship
@@ -95,8 +102,11 @@ export const createGameBoard = (rows = 10, cols = 10) => {
             row > 9 ||
             col < 0 ||
             col > 9) return true
+            
 
         if (_grid[row][col] === null) return false
+        
+
         
         return true
     }
@@ -112,18 +122,18 @@ export const createGameBoard = (rows = 10, cols = 10) => {
     }
 
     //checkrotate method
-    function checkRotate(name, orientation) {
+    function checkRotate(name, newOrientation) {
         const ship = getShip(name)
         const length = ship.getLength()
         const coords = ship.getAnchor()
         const [col, row] = [coords[0],coords[1]] 
 
-        if (orientation == "v") {
-            for (let i = row-1; i > row-length-1; i--) {
+        if (newOrientation == "v") {
+            for (let i = row-1; i >= row-(length-1); i--) {
                 if (checkCoords([col,i])) return false 
             }
         } else {
-            for (let j = col+1; j < col+length-1; j++) {
+            for (let j = col+1; j <= col+length-1; j++) {
                 if (checkCoords([j,row])) return false
             }
         }
@@ -134,16 +144,21 @@ export const createGameBoard = (rows = 10, cols = 10) => {
     function rotate(name) {
         const ship = getShip(name)
         const coords = ship.getAnchor()
-        let orientation
-        ship.getOrientation() == "v" ? orientation = "h": orientation = "v"; 
-
-        if (checkRotate(name, orientation)) {
+        let newOrientation
+        ship.getOrientation() == "v" ? newOrientation = "h": newOrientation = "v"; 
+        
+        if (checkRotate(name, newOrientation)) {
             remove(name)
-            if (orientation == "v") {
+            if (newOrientation == "v") {
                 placeDown(name, coords)
-            } else { placeRight(name, coords)}
-        }
+            } else { 
+                placeRight(name, coords)
+            }
+        } else {throw Error("Ship cannot be rotated as it collides with another ship or is out of bounds")}
+
     }
+
+        
 
 
     //where method --> takes name of ship and returns all positions where ship object matching the name is reference
