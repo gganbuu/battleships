@@ -1,0 +1,6 @@
+export const createStartGameButton = () => {
+    const button = document.createElement("button")
+    button.classList.add('startgame-button')
+    button.textContent = "start game"
+    return button
+}

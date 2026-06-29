@@ -28,6 +28,21 @@ export const createGameBoard = (rows = 10, cols = 10) => {
         return Array.from({length: rows}, () => Array(cols).fill(null))
     }
 
+    function resetAll() {
+        // remove all references to ships in gameboard
+        for (let i = 0; i < rows; i++) {
+            for (let j = 0; j < cols; j++ ) {
+                _grid[i][j] = null
+            }
+        }
+
+        // remove orientation and anchors in ships
+        _ships.forEach(ship => {
+            ship.setAnchor(null)
+            ship.setOrientation(null)
+        })
+    }
+
     function getGrid() {
         return _grid
     }
@@ -262,6 +277,7 @@ export const createGameBoard = (rows = 10, cols = 10) => {
         getAllShips,
         checkRotate,
         rotate,
+        resetAll,
     }
 }
 

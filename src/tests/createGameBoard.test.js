@@ -342,6 +342,35 @@ describe("rotate method", () => {
     
 })
 
+describe("resetGameboard method", () => {
+    test("full gameboard reset" , () => {
+        const gameboard = createGameBoard()
+        gameboard.placeRight("cruiser", [0,0])
+        gameboard.placeRight("destroyer", [0,1])
+        gameboard.placeRight("carrier", [0,2])
+        gameboard.placeRight("submarine", [0,3])
+        gameboard.placeRight("battleship", [0,4])
+        gameboard.resetAll()
+        expect(gameboard.getShip("cruiser").getAnchor()).toBe(null)
+        expect(gameboard.getShip("destroyer").getAnchor()).toBe(null)
+        expect(gameboard.getShip("carrier").getAnchor()).toBe(null)
+        expect(gameboard.getShip("submarine").getAnchor()).toBe(null)
+        expect(gameboard.getShip("battleship").getAnchor()).toBe(null)
+
+        expect(gameboard.getShip("cruiser").getOrientation()).toBe(null)
+        expect(gameboard.getShip("destroyer").getOrientation()).toBe(null)
+        expect(gameboard.getShip("carrier").getOrientation()).toBe(null)
+        expect(gameboard.getShip("submarine").getOrientation()).toBe(null)
+        expect(gameboard.getShip("battleship").getOrientation()).toBe(null)
+        
+        expect(gameboard.where("cruiser")).toBe(false)
+        expect(gameboard.where("destroyer")).toBe(false)
+        expect(gameboard.where("carrier")).toBe(false)
+        expect(gameboard.where("submarine")).toBe(false)
+        expect(gameboard.where("battleship")).toBe(false)
+    })
+})
+
 
 
 
